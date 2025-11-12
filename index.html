@@ -26,23 +26,16 @@
       align-items: stretch;
     }
 
-    /* LAYOUT GENERAL: por defecto UNA columna (diapositiva). En escritorio, si hay chat, se arma la segunda. */
+    /* LAYOUT GENERAL: siempre una sola columna (diapositivas arriba, chat abajo) */
     .app-layout {
       background-color: #f1f5f9;
       border-radius: 16px;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
       max-width: 1280px;
       width: 100%;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr); /* una sola columna */
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-    }
-
-    @media (min-width: 900px) {
-      .app-layout.has-chat {
-        /* solo en escritorio y cuando hay chat: dos columnas */
-        grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1.65fr);
-      }
     }
 
     .slides-area {
@@ -52,18 +45,17 @@
       align-items: stretch;
       justify-content: center;
     }
-
     .slides-inner {
       background-color: #f8fafc;
       border-radius: 12px;
       width: 100%;
       margin: 4px;
-      padding: 24px 28px 72px;
+      padding: 24px 28px 32px;
       position: relative;
       overflow: hidden;
     }
 
-    .slide { display: none; height: 100%; }
+    .slide { display: none; }
     .slide.active { display: block; }
 
     .slide-title {
@@ -83,7 +75,7 @@
     .hero {
       background: radial-gradient(circle at top left, #fde68a, #fef9c3 30%, #f8fafc 75%);
       border-radius: 18px;
-      padding: 32px 24px 80px;
+      padding: 32px 24px 48px;
       text-align: center;
     }
     .hero-title {
@@ -159,7 +151,7 @@
     .mission-wrapper {
       background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
       border-radius: 18px;
-      padding: 28px 22px 74px;
+      padding: 28px 22px 40px;
       text-align: center;
     }
     .mission-title {
@@ -212,7 +204,7 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-top:4px;
+      margin-top:8px;
     }
     .mission-footer button {
       font-family:"Poppins",sans-serif;
@@ -286,9 +278,14 @@
     /* DIAPOSITIVAS DE PRESIDENTES */
     .pres-layout {
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1fr);
       gap: 18px;
       align-items: start;
+    }
+    @media (min-width: 900px) {
+      .pres-layout {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      }
     }
     .portrait-lg {
       width: 260px;
@@ -329,15 +326,12 @@
       margin-top: 10px;
     }
 
-    /* BARRA INFERIOR NAV */
+    /* BOTONES INFERIORES */
     .bar {
-      position: absolute;
-      left: 20px;
-      right: 20px;
-      bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-top: 24px;
     }
     .btn {
       font-family:"Poppins",sans-serif;
@@ -366,12 +360,12 @@
       box-shadow: 0 8px 18px rgba(15,23,42,.35);
     }
 
-    /* CHAT LATERAL / ABAJO */
+    /* CHAT ABAJO */
     .chat-side {
       background-color: #0b1220;
       color: #e5e7eb;
       padding: 14px;
-      border-left: 1px solid #1f2937;
+      border-top: 1px solid #1f2937;
       display: none;
       flex-direction: column;
       gap: 10px;
@@ -424,11 +418,12 @@
       border-radius:6px;
       padding:6px;
       font-size: 14px;
+      min-height: 160px;
     }
     .m { margin-bottom: 6px; }
     .m.user { font-weight: 600; }
     .m.ai { margin-left: 4px; }
-    .chat-input { display:flex; gap:6px; }
+    .chat-input { display:flex; gap:6px; margin-top:6px; }
     .chat-input input {
       flex:1;
       border-radius: 999px;
@@ -442,35 +437,29 @@
       box-shadow: 0 0 0 1px rgba(249,115,22,.6);
     }
 
-    /* CELU: chat abajo y todo en una columna */
+    /* CELU: algunos ajustes */
     @media (max-width: 900px) {
-      .app-layout {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .chat-side {
-        border-left: none;
-        border-top: 1px solid #1f2937;
-        padding: 16px;
-      }
       .mission-grid {
         grid-template-columns: minmax(0, 1fr);
       }
-      .pres-layout {
+      .grid-2 {
         grid-template-columns: minmax(0, 1fr);
       }
-      .bar {
-        position: static;
-        margin-top: 20px;
-      }
       .slides-inner {
-        padding-bottom: 24px;
+        padding: 20px 16px 28px;
+      }
+      .hero-title {
+        font-size: 34px;
+      }
+      .hero-subtitle {
+        font-size: 18px;
       }
     }
   </style>
 </head>
 <body>
   <div id="layout" class="app-layout">
-    <!-- COLUMNA 1: DIAPOSITIVAS -->
+    <!-- DIAPOSITIVAS -->
     <div class="slides-area">
       <div class="slides-inner">
 
@@ -558,7 +547,7 @@
         <section id="s3" class="slide">
           <h2 class="slide-title" style="text-align:center;">Elegí al presidente para entrevistar</h2>
           <p class="subtitle" style="text-align:center; max-width:720px; margin: 0 auto 18px;">
-            Cada grupo va a centrarse en uno de estos presidentes. Después comparan sus respuestas
+            Cada grupo se centrará en uno de estos presidentes. Después comparan sus respuestas
             para entender cambios y continuidades en la historia argentina.
           </p>
           <div class="grid-2" style="margin-top:12px;">
@@ -758,7 +747,7 @@
       </div>
     </div>
 
-    <!-- COLUMNA 2: CHAT (en celu queda abajo) -->
+    <!-- CHAT (siempre debajo, solo visible en presidentes) -->
     <aside id="chat" class="chat-side">
       <div class="chat-header">
         <div class="title">Entrevista con <span id="who">el presidente</span></div>
@@ -818,12 +807,10 @@
       document.getElementById("s" + i).classList.add("active");
       current = i;
 
-      const layout = document.getElementById("layout");
       const aside = document.getElementById("chat");
 
       if ([4, 5, 6, 7].includes(i)) {
         aside.classList.add("active");
-        layout.classList.add("has-chat");
         const info = prompts[i];
         systemPrompt = info.prompt;
         persona = info.name;
@@ -835,7 +822,6 @@
         if (q) q.value = "";
       } else {
         aside.classList.remove("active");
-        layout.classList.remove("has-chat");
         systemPrompt = "";
         persona = "";
       }
