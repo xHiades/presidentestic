@@ -1,16 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conexión Histórica: Presidentes + Chat</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
   <style>
-    * { box-sizing: border-box; scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
       min-height: 100vh;
@@ -22,6 +26,7 @@
       align-items: stretch;
     }
 
+    /* LAYOUT GENERAL: por defecto UNA columna (diapositiva). En escritorio, si hay chat, se arma la segunda. */
     .app-layout {
       background-color: #f1f5f9;
       border-radius: 16px;
@@ -29,12 +34,15 @@
       max-width: 1280px;
       width: 100%;
       display: grid;
-      grid-template-columns: minmax(0, 1.9fr) minmax(300px, 1.1fr);
+      grid-template-columns: minmax(0, 1fr); /* una sola columna */
       overflow: hidden;
-      transition: grid-template-columns .2s ease-in-out;
     }
-    .app-layout.wide-chat {
-      grid-template-columns: minmax(0, 1.1fr) minmax(460px, 1.9fr);
+
+    @media (min-width: 900px) {
+      .app-layout.has-chat {
+        /* solo en escritorio y cuando hay chat: dos columnas */
+        grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1.65fr);
+      }
     }
 
     .slides-area {
@@ -44,6 +52,7 @@
       align-items: stretch;
       justify-content: center;
     }
+
     .slides-inner {
       background-color: #f8fafc;
       border-radius: 12px;
@@ -70,7 +79,7 @@
       margin-bottom: 14px;
     }
 
-    /* HERO PORTADA */
+    /* PORTADA */
     .hero {
       background: radial-gradient(circle at top left, #fde68a, #fef9c3 30%, #f8fafc 75%);
       border-radius: 18px;
@@ -227,6 +236,7 @@
       box-shadow:0 8px 18px rgba(239,68,68,.6);
     }
 
+    /* SELECCIÓN DE PRESIDENTES */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -273,9 +283,10 @@
       color: #4b5563;
     }
 
+    /* DIAPOSITIVAS DE PRESIDENTES */
     .pres-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       gap: 18px;
       align-items: start;
     }
@@ -286,7 +297,7 @@
       border: 4px solid #111827;
       overflow: hidden;
       background:#e5e7eb;
-      margin: 0 auto;
+      margin: 0 auto 8px;
     }
     .portrait-lg img {
       width: 100%;
@@ -318,6 +329,7 @@
       margin-top: 10px;
     }
 
+    /* BARRA INFERIOR NAV */
     .bar {
       position: absolute;
       left: 20px;
@@ -354,6 +366,7 @@
       box-shadow: 0 8px 18px rgba(15,23,42,.35);
     }
 
+    /* CHAT LATERAL / ABAJO */
     .chat-side {
       background-color: #0b1220;
       color: #e5e7eb;
@@ -429,21 +442,35 @@
       box-shadow: 0 0 0 1px rgba(249,115,22,.6);
     }
 
-    @media (max-width: 980px) {
-      .app-layout,
-      .app-layout.wide-chat {
+    /* CELU: chat abajo y todo en una columna */
+    @media (max-width: 900px) {
+      .app-layout {
         grid-template-columns: minmax(0, 1fr);
       }
       .chat-side {
-        border-left:none;
-        border-top:1px solid #1f2937;
+        border-left: none;
+        border-top: 1px solid #1f2937;
+        padding: 16px;
       }
-      .mission-grid { grid-template-columns: minmax(0,1fr); }
+      .mission-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .pres-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .bar {
+        position: static;
+        margin-top: 20px;
+      }
+      .slides-inner {
+        padding-bottom: 24px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="layout" class="app-layout">
+    <!-- COLUMNA 1: DIAPOSITIVAS -->
     <div class="slides-area">
       <div class="slides-inner">
 
@@ -460,7 +487,7 @@
             </div>
 
             <p class="hero-tagline">
-              Viajen en el tiempo y entrevisten a los líderes argentinos usando Inteligencia Artificial.
+              Viajen en el tiempo y entrevisten a líderes argentinos usando Inteligencia Artificial.
             </p>
 
             <div class="hero-pills">
@@ -476,7 +503,7 @@
           </div>
         </section>
 
-        <!-- SLIDE 2: MISIÓN / PASOS -->
+        <!-- SLIDE 2: MISIÓN -->
         <section id="s2" class="slide">
           <div class="mission-wrapper">
             <h2 class="mission-title">Tu misión como periodista histórico</h2>
@@ -488,8 +515,8 @@
                 </div>
                 <h3>PASO 1: Investigar<br />(Libros)</h3>
                 <p>
-                  Antes de entrevistar, investigá en tus libros de Historia y fichas.
-                  Prepará preguntas clave sobre el mandato del presidente que te tocó.
+                  Antes de entrevistar, investigan en los libros y fichas.
+                  Preparan preguntas clave sobre el presidente que les tocó.
                 </p>
               </div>
 
@@ -500,7 +527,7 @@
                 <h3>PASO 2: Entrevistar<br />(IA)</h3>
                 <p>
                   En la diapositiva del presidente va a aparecer el chat.
-                  Usá el “prompt de rol” y hacé tus preguntas como si fueras un periodista.
+                  Usan el “rol” que se les propone y le hacen preguntas como si fueran periodistas.
                 </p>
               </div>
 
@@ -510,8 +537,8 @@
                 </div>
                 <h3>PASO 3: Contrastar<br />(Crítica)</h3>
                 <p>
-                  ¡Cuidado! La IA puede cometer errores.
-                  Compará sus respuestas con el libro y otras fuentes. Vos sos quien verifica la información.
+                  ¡Cuidado! La IA puede equivocarse.
+                  Comparan sus respuestas con el libro y otras fuentes para construir una mirada crítica.
                 </p>
               </div>
             </div>
@@ -521,15 +548,19 @@
                 <i class="fa-solid fa-arrow-left-long"></i> Volver
               </button>
               <button class="primary" onclick="nextSlide()">
-                ¡Entendido! Ir a selección <i class="fa-solid fa-arrow-right-long"></i>
+                ¡Entendido! Ir a la selección <i class="fa-solid fa-arrow-right-long"></i>
               </button>
             </div>
           </div>
         </section>
 
-        <!-- SLIDE 3: SELECCIÓN DE PRESIDENTES -->
+        <!-- SLIDE 3: SELECCIÓN -->
         <section id="s3" class="slide">
           <h2 class="slide-title" style="text-align:center;">Elegí al presidente para entrevistar</h2>
+          <p class="subtitle" style="text-align:center; max-width:720px; margin: 0 auto 18px;">
+            Cada grupo va a centrarse en uno de estos presidentes. Después comparan sus respuestas
+            para entender cambios y continuidades en la historia argentina.
+          </p>
           <div class="grid-2" style="margin-top:12px;">
             <a class="card" href="javascript:goPres(4)">
               <div class="avatar">
@@ -587,16 +618,16 @@
               <h3>Consigna (en el cuaderno)</h3>
               <ul>
                 <li>Formulen 3–4 preguntas sobre voto, democracia y conflictos sociales.</li>
-                <li>Registren las respuestas de la IA y contrasten con el libro.</li>
+                <li>Registren las respuestas de la IA y marquen coincidencias y diferencias con el libro.</li>
               </ul>
               <h3>Preguntas guía</h3>
               <ul>
                 <li>¿Por qué defendés el voto secreto y obligatorio?</li>
-                <li>¿Cómo interpretás la Semana Trágica y las huelgas?</li>
+                <li>¿Cómo interpretás la Semana Trágica y las huelgas obreras?</li>
                 <li>¿Qué significa “democracia” en tu época?</li>
               </ul>
               <div class="cuaderno">
-                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas resumidas y contraste.
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas resumidas y contraste con el libro.
               </div>
             </div>
           </div>
@@ -618,8 +649,8 @@
             <div class="consignas">
               <h3>Consigna (en el cuaderno)</h3>
               <ul>
-                <li>Pregunten por economía, modernización y tensiones internas en la UCR.</li>
-                <li>Registren y contrasten con el manual.</li>
+                <li>Pregunten por economía, modernización y tensiones dentro de la UCR.</li>
+                <li>Registren las respuestas y compárenlas con el manual.</li>
               </ul>
               <h3>Preguntas guía</h3>
               <ul>
@@ -628,7 +659,7 @@
                 <li>¿Qué opinás de las demandas de cambio social?</li>
               </ul>
               <div class="cuaderno">
-                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas y contraste.
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas y contraste con el libro.
               </div>
             </div>
           </div>
@@ -650,13 +681,13 @@
             <div class="consignas">
               <h3>Consigna (en el cuaderno)</h3>
               <ul>
-                <li>Pregunten por el golpe de 1930, el orden y el corporativismo.</li>
-                <li>Registren y contrasten con fuentes escolares.</li>
+                <li>Pregunten por el golpe de 1930, el “orden” y el proyecto corporativo.</li>
+                <li>Registren sus respuestas y compárenlas con las fuentes escolares.</li>
               </ul>
               <h3>Preguntas guía</h3>
               <ul>
                 <li>¿Cómo justificás el golpe a Yrigoyen?</li>
-                <li>¿Qué significa “orden” en tu proyecto?</li>
+                <li>¿Qué significa “orden” en tu proyecto político?</li>
                 <li>¿Qué modelo de Estado proponés?</li>
               </ul>
               <div class="cuaderno">
@@ -683,12 +714,12 @@
               <h3>Consigna (en el cuaderno)</h3>
               <ul>
                 <li>Pregunten por derechos sociales, voto femenino y relación con trabajadores.</li>
-                <li>Registren y contrasten con el libro.</li>
+                <li>Registren las respuestas y compárenlas con el libro y otros materiales.</li>
               </ul>
               <h3>Preguntas guía</h3>
               <ul>
-                <li>¿Cómo entendés la justicia social?</li>
-                <li>¿Qué rol tuvo Eva Perón?</li>
+                <li>¿Cómo entendés la “justicia social”?</li>
+                <li>¿Qué rol tuvo Eva Perón en tu gobierno?</li>
                 <li>¿Qué respondés a tus opositores?</li>
               </ul>
               <div class="cuaderno">
@@ -704,16 +735,20 @@
 
         <!-- SLIDE 8: CIERRE -->
         <section id="s8" class="slide">
-          <h2 class="slide-title">Cierre</h2>
+          <h2 class="slide-title">Cierre: ¿qué aprendimos?</h2>
           <div class="consignas">
-            <p><strong>Producto final:</strong> línea de tiempo o infografía comparando respuestas de la IA con el libro.</p>
+            <p>
+              <strong>Producto final:</strong> línea de tiempo, cuadro comparativo o infografía
+              donde muestren qué les dijo la IA y qué dicen los libros.
+            </p>
             <ul>
               <li>Coincidencias y diferencias entre IA y texto escolar.</li>
-              <li>Cómo cambia la noción de “pueblo” y “Estado”.</li>
+              <li>Cómo cambia la noción de “pueblo”, “Estado” y “derechos”.</li>
               <li>Ventajas y riesgos de usar IA en Historia.</li>
             </ul>
             <div class="cuaderno">
-              <strong>En el cuaderno:</strong> síntesis del grupo + reflexión personal (3–4 líneas).
+              <strong>En el cuaderno:</strong> síntesis del grupo + reflexión personal corta
+              sobre qué les ayudó y qué les confundió de la IA.
             </div>
           </div>
           <div class="bar" style="justify-content:flex-end;">
@@ -723,14 +758,16 @@
       </div>
     </div>
 
-    <!-- PANEL DE CHAT (solo en presidentes) -->
+    <!-- COLUMNA 2: CHAT (en celu queda abajo) -->
     <aside id="chat" class="chat-side">
       <div class="chat-header">
         <div class="title">Entrevista con <span id="who">el presidente</span></div>
         <small>El chat se adapta al presidente de la diapositiva.</small>
       </div>
+
       <div style="font-size:12px; margin-top:2px;"><strong>Rol de la IA (prompt)</strong></div>
       <div id="promptText" onclick="copyPrompt()">Elegí un presidente para ver el rol.</div>
+
       <div id="chatBox">
         <div id="msgs" class="messages"></div>
         <div class="chat-input">
@@ -738,8 +775,10 @@
           <button class="btn primary" style="padding: 8px 14px;" onclick="send()">Enviar</button>
         </div>
       </div>
+
       <div style="font-size:11px; color:#fbbf24;">
-        <i class="fa-solid fa-circle-exclamation"></i> La IA puede equivocarse: contrasten con el libro.
+        <i class="fa-solid fa-circle-exclamation"></i>
+        La IA puede equivocarse: contrasten siempre con el libro.
       </div>
       <a href="https://chat.openai.com/" target="_blank" style="font-size:11px; color:#93c5fd; text-decoration:none;">
         <i class="fa-solid fa-up-right-from-square"></i> Abrir ChatGPT
@@ -760,7 +799,7 @@
       },
       5: {
         name: "Marcelo T. de Alvear",
-        prompt: "Actuá como Marcelo T. de Alvear (1925). Respondé en primera persona, con tono diplomático. Describí estabilidad económica, relación con Yrigoyen y tu mirada sobre demandas de cambio social."
+        prompt: "Actuá como Marcelo T. de Alvear (1925). Respondé en primera persona, con tono diplomático. Describí estabilidad económica, relación con Yrigoyen y tu mirada sobre las demandas de cambio social."
       },
       6: {
         name: "José Félix Uriburu",
@@ -768,7 +807,7 @@
       },
       7: {
         name: "Juan D. Perón",
-        prompt: "Actuá como Juan D. Perón (1950). Respondé en primera persona, con tono carismático. Defendé justicia social, voto femenino y relación con los trabajadores; respondé a críticas opositoras."
+        prompt: "Actuá como Juan D. Perón (1950). Respondé en primera persona, con tono carismático. Defendé la justicia social, el voto femenino y la relación con los trabajadores; respondé a las críticas opositoras."
       }
     };
 
@@ -784,7 +823,7 @@
 
       if ([4, 5, 6, 7].includes(i)) {
         aside.classList.add("active");
-        layout.classList.add("wide-chat");
+        layout.classList.add("has-chat");
         const info = prompts[i];
         systemPrompt = info.prompt;
         persona = info.name;
@@ -796,7 +835,7 @@
         if (q) q.value = "";
       } else {
         aside.classList.remove("active");
-        layout.classList.remove("wide-chat");
+        layout.classList.remove("has-chat");
         systemPrompt = "";
         persona = "";
       }
