@@ -1,0 +1,880 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conexión Histórica: Presidentes + Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 12px;
+      background-color: #0b1120;
+      font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .app-layout {
+      background-color: #f1f5f9;
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+      max-width: 1280px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(300px, 1.1fr);
+      overflow: hidden;
+      transition: grid-template-columns .2s ease-in-out;
+    }
+    .app-layout.wide-chat {
+      grid-template-columns: minmax(0, 1.1fr) minmax(460px, 1.9fr);
+    }
+
+    .slides-area {
+      background-color: #111827;
+      padding: 10px;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+    .slides-inner {
+      background-color: #f8fafc;
+      border-radius: 12px;
+      width: 100%;
+      margin: 4px;
+      padding: 24px 28px 72px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide { display: none; height: 100%; }
+    .slide.active { display: block; }
+
+    .slide-title {
+      font-family: "Poppins", sans-serif;
+      font-weight: 700;
+      font-size: 32px;
+      color: #0f172a;
+      margin: 0 0 12px;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: #334155;
+      margin-bottom: 14px;
+    }
+
+    /* HERO PORTADA */
+    .hero {
+      background: radial-gradient(circle at top left, #fde68a, #fef9c3 30%, #f8fafc 75%);
+      border-radius: 18px;
+      padding: 32px 24px 80px;
+      text-align: center;
+    }
+    .hero-title {
+      font-family: "Poppins", sans-serif;
+      font-size: 44px;
+      color: #b91c1c;
+      margin: 0;
+    }
+    .hero-subtitle {
+      font-family: "Poppins", sans-serif;
+      font-size: 22px;
+      color: #111827;
+      margin: 6px 0 24px;
+    }
+    .hero-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 20px;
+    }
+    .hero-icons .big-icon {
+      font-size: 80px;
+      color: #111827;
+    }
+    .hero-icons .arrow {
+      font-size: 32px;
+      color: #ef4444;
+    }
+    .hero-tagline {
+      font-size: 17px;
+      color: #1f2937;
+      margin-bottom: 18px;
+    }
+    .hero-pills {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background-color: #0f172a;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+    .hero-btn {
+      font-family:"Poppins",sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: none;
+      background-color: #ef4444;
+      color:#fff;
+      cursor:pointer;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, .6);
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+    }
+    .hero-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(239, 68, 68, .7);
+    }
+
+    /* MISIÓN / PASOS */
+    .mission-wrapper {
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      border-radius: 18px;
+      padding: 28px 22px 74px;
+      text-align: center;
+    }
+    .mission-title {
+      font-family:"Poppins",sans-serif;
+      font-size: 30px;
+      color:#0f172a;
+      margin:0 0 24px;
+    }
+    .mission-grid {
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:18px;
+      max-width: 980px;
+      margin: 0 auto 18px;
+    }
+    .mission-card {
+      background:#f9fafb;
+      border-radius: 20px;
+      border:1px solid #cbd5f5;
+      padding:22px 18px;
+      box-shadow: 0 10px 28px rgba(15,23,42,.12);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+    .mission-icon {
+      width:52px;
+      height:52px;
+      border-radius:18px;
+      background:#fee2e2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#b91c1c;
+      font-size:26px;
+    }
+    .mission-card h3 {
+      font-family:"Poppins",sans-serif;
+      font-size:18px;
+      color:#111827;
+      margin:4px 0;
+      line-height:1.3;
+    }
+    .mission-card p {
+      font-size:14px;
+      color:#1f2937;
+    }
+    .mission-footer {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:4px;
+    }
+    .mission-footer button {
+      font-family:"Poppins",sans-serif;
+      font-size:14px;
+      font-weight:600;
+      border-radius:999px;
+      border:none;
+      padding:9px 18px;
+      cursor:pointer;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .mission-footer .secondary {
+      background:#bae6fd;
+      color:#0f172a;
+    }
+    .mission-footer .primary {
+      background:#ef4444;
+      color:#fff;
+      box-shadow:0 8px 18px rgba(239,68,68,.6);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .card {
+      background-color: #eef2ff;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #c7d2fe;
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+    }
+    .card:hover {
+      background-color: #e0e7ff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(148, 163, 184, 0.55);
+    }
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid #111827;
+      background-color: #e5e7eb;
+      flex-shrink: 0;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-title {
+      font-family: "Poppins", sans-serif;
+      font-size: 20px;
+      color: #111827;
+      font-weight: 700;
+    }
+    .card-dates {
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    .pres-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .portrait-lg {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 4px solid #111827;
+      overflow: hidden;
+      background:#e5e7eb;
+      margin: 0 auto;
+    }
+    .portrait-lg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .consignas {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .consignas h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .consignas p,
+    .consignas li {
+      font-size: 15px;
+      color: #1f2937;
+    }
+    .cuaderno {
+      background:#f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      color:#334155;
+      margin-top: 10px;
+    }
+
+    .bar {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      font-family:"Poppins",sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .15s, box-shadow .15s, background-color .15s;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
+    }
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15,23,42,.35);
+    }
+
+    .chat-side {
+      background-color: #0b1220;
+      color: #e5e7eb;
+      padding: 14px;
+      border-left: 1px solid #1f2937;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-side.active { display: flex; }
+
+    .chat-header {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .chat-header .title {
+      font-family: "Poppins", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #f97316;
+    }
+    .chat-header small {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    #promptText {
+      font-size: 12px;
+      background:#020617;
+      border:1px solid #1f2937;
+      border-radius: 8px;
+      padding:8px;
+      max-height: 120px;
+      overflow-y:auto;
+      white-space: pre-wrap;
+      cursor:pointer;
+    }
+
+    #chatBox {
+      flex:1;
+      border:1px solid #1f2937;
+      background:#020617;
+      border-radius: 10px;
+      padding: 8px;
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+      min-height:0;
+    }
+    .messages {
+      flex:1;
+      overflow-y:auto;
+      background:#020617;
+      border-radius:6px;
+      padding:6px;
+      font-size: 14px;
+    }
+    .m { margin-bottom: 6px; }
+    .m.user { font-weight: 600; }
+    .m.ai { margin-left: 4px; }
+    .chat-input { display:flex; gap:6px; }
+    .chat-input input {
+      flex:1;
+      border-radius: 999px;
+      border:1px solid #4b5563;
+      padding: 8px 12px;
+      font-size:14px;
+      outline:none;
+    }
+    .chat-input input:focus {
+      border-color:#f97316;
+      box-shadow: 0 0 0 1px rgba(249,115,22,.6);
+    }
+
+    @media (max-width: 980px) {
+      .app-layout,
+      .app-layout.wide-chat {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .chat-side {
+        border-left:none;
+        border-top:1px solid #1f2937;
+      }
+      .mission-grid { grid-template-columns: minmax(0,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div id="layout" class="app-layout">
+    <div class="slides-area">
+      <div class="slides-inner">
+
+        <!-- SLIDE 1: PORTADA -->
+        <section id="s1" class="slide active">
+          <div class="hero">
+            <h1 class="hero-title">Conexión Histórica</h1>
+            <p class="hero-subtitle">(Diálogos con Presidentes 1916–1955)</p>
+
+            <div class="hero-icons">
+              <i class="fa-solid fa-microphone-lines big-icon"></i>
+              <i class="fa-solid fa-arrow-right-long arrow"></i>
+              <i class="fa-solid fa-computer big-icon" style="font-size:70px;"></i>
+            </div>
+
+            <p class="hero-tagline">
+              Viajen en el tiempo y entrevisten a los líderes argentinos usando Inteligencia Artificial.
+            </p>
+
+            <div class="hero-pills">
+              <span class="hero-pill"><i class="fa-solid fa-clock"></i> Historia argentina</span>
+              <span class="hero-pill"><i class="fa-solid fa-brain"></i> IA y pensamiento crítico</span>
+              <span class="hero-pill"><i class="fa-solid fa-pen-nib"></i> Trabajo en cuaderno</span>
+            </div>
+
+            <button class="hero-btn" onclick="nextSlide()">
+              Comenzar entrevista
+              <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: MISIÓN / PASOS -->
+        <section id="s2" class="slide">
+          <div class="mission-wrapper">
+            <h2 class="mission-title">Tu misión como periodista histórico</h2>
+
+            <div class="mission-grid">
+              <div class="mission-card">
+                <div class="mission-icon">
+                  <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+                <h3>PASO 1: Investigar<br />(Libros)</h3>
+                <p>
+                  Antes de entrevistar, investigá en tus libros de Historia y fichas.
+                  Prepará preguntas clave sobre el mandato del presidente que te tocó.
+                </p>
+              </div>
+
+              <div class="mission-card">
+                <div class="mission-icon">
+                  <i class="fa-solid fa-robot"></i>
+                </div>
+                <h3>PASO 2: Entrevistar<br />(IA)</h3>
+                <p>
+                  En la diapositiva del presidente va a aparecer el chat.
+                  Usá el “prompt de rol” y hacé tus preguntas como si fueras un periodista.
+                </p>
+              </div>
+
+              <div class="mission-card">
+                <div class="mission-icon">
+                  <i class="fa-solid fa-magnifying-glass-chart"></i>
+                </div>
+                <h3>PASO 3: Contrastar<br />(Crítica)</h3>
+                <p>
+                  ¡Cuidado! La IA puede cometer errores.
+                  Compará sus respuestas con el libro y otras fuentes. Vos sos quien verifica la información.
+                </p>
+              </div>
+            </div>
+
+            <div class="mission-footer">
+              <button class="secondary" onclick="prevSlide()">
+                <i class="fa-solid fa-arrow-left-long"></i> Volver
+              </button>
+              <button class="primary" onclick="nextSlide()">
+                ¡Entendido! Ir a selección <i class="fa-solid fa-arrow-right-long"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: SELECCIÓN DE PRESIDENTES -->
+        <section id="s3" class="slide">
+          <h2 class="slide-title" style="text-align:center;">Elegí al presidente para entrevistar</h2>
+          <div class="grid-2" style="margin-top:12px;">
+            <a class="card" href="javascript:goPres(4)">
+              <div class="avatar">
+                <img src="imagenes/yrigoyen.jpg" alt="Yrigoyen" onerror="this.src='https://placehold.co/72x72/A9D6E5/111827?text=H.Y.'">
+              </div>
+              <div>
+                <div class="card-title">Hipólito Yrigoyen</div>
+                <div class="card-dates">(1916-1922, 1928-1930)</div>
+              </div>
+            </a>
+            <a class="card" href="javascript:goPres(5)">
+              <div class="avatar">
+                <img src="imagenes/alvear.jpg" alt="Alvear" onerror="this.src='https://placehold.co/72x72/A9D6E5/111827?text=M.A.'">
+              </div>
+              <div>
+                <div class="card-title">Marcelo T. de Alvear</div>
+                <div class="card-dates">(1922-1928)</div>
+              </div>
+            </a>
+            <a class="card" href="javascript:goPres(6)">
+              <div class="avatar">
+                <img src="imagenes/uriburu.jpg" alt="Uriburu" onerror="this.src='https://placehold.co/72x72/D4D4D8/111827?text=J.U.'">
+              </div>
+              <div>
+                <div class="card-title">José Félix Uriburu</div>
+                <div class="card-dates">(1930-1932)</div>
+              </div>
+            </a>
+            <a class="card" href="javascript:goPres(7)">
+              <div class="avatar">
+                <img src="imagenes/peron.jpg" alt="Perón" onerror="this.src='https://placehold.co/72x72/F97316/FFFFFF?text=J.P.'">
+              </div>
+              <div>
+                <div class="card-title">Juan D. Perón</div>
+                <div class="card-dates">(1946-1955)</div>
+              </div>
+            </a>
+          </div>
+          <div class="bar">
+            <button class="btn secondary" onclick="prevSlide()">Volver</button>
+            <button class="btn primary" onclick="nextSlide()">Siguiente</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: YRIGOYEN -->
+        <section id="s4" class="slide">
+          <h2 class="slide-title">Hipólito Yrigoyen</h2>
+          <div class="pres-layout">
+            <div>
+              <div class="portrait-lg">
+                <img src="imagenes/yrigoyen.jpg" alt="Hipólito Yrigoyen" onerror="this.src='https://placehold.co/260x260/A9D6E5/111827?text=H.Y.'">
+              </div>
+            </div>
+            <div class="consignas">
+              <h3>Consigna (en el cuaderno)</h3>
+              <ul>
+                <li>Formulen 3–4 preguntas sobre voto, democracia y conflictos sociales.</li>
+                <li>Registren las respuestas de la IA y contrasten con el libro.</li>
+              </ul>
+              <h3>Preguntas guía</h3>
+              <ul>
+                <li>¿Por qué defendés el voto secreto y obligatorio?</li>
+                <li>¿Cómo interpretás la Semana Trágica y las huelgas?</li>
+                <li>¿Qué significa “democracia” en tu época?</li>
+              </ul>
+              <div class="cuaderno">
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas resumidas y contraste.
+              </div>
+            </div>
+          </div>
+          <div class="bar">
+            <button class="btn secondary" onclick="prevSlide()">Volver</button>
+            <button class="btn primary" onclick="nextSlide()">Siguiente presidente</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: ALVEAR -->
+        <section id="s5" class="slide">
+          <h2 class="slide-title">Marcelo T. de Alvear</h2>
+          <div class="pres-layout">
+            <div>
+              <div class="portrait-lg">
+                <img src="imagenes/alvear.jpg" alt="Marcelo T. de Alvear" onerror="this.src='https://placehold.co/260x260/A9D6E5/111827?text=M.A.'">
+              </div>
+            </div>
+            <div class="consignas">
+              <h3>Consigna (en el cuaderno)</h3>
+              <ul>
+                <li>Pregunten por economía, modernización y tensiones internas en la UCR.</li>
+                <li>Registren y contrasten con el manual.</li>
+              </ul>
+              <h3>Preguntas guía</h3>
+              <ul>
+                <li>¿Cómo describís la estabilidad de tu gobierno?</li>
+                <li>¿Qué relación tuviste con Yrigoyen?</li>
+                <li>¿Qué opinás de las demandas de cambio social?</li>
+              </ul>
+              <div class="cuaderno">
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas y contraste.
+              </div>
+            </div>
+          </div>
+          <div class="bar">
+            <button class="btn secondary" onclick="prevSlide()">Volver</button>
+            <button class="btn primary" onclick="nextSlide()">Siguiente presidente</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: URIBURU -->
+        <section id="s6" class="slide">
+          <h2 class="slide-title">José Félix Uriburu</h2>
+          <div class="pres-layout">
+            <div>
+              <div class="portrait-lg">
+                <img src="imagenes/uriburu.jpg" alt="José Félix Uriburu" onerror="this.src='https://placehold.co/260x260/D4D4D8/111827?text=J.U.'">
+              </div>
+            </div>
+            <div class="consignas">
+              <h3>Consigna (en el cuaderno)</h3>
+              <ul>
+                <li>Pregunten por el golpe de 1930, el orden y el corporativismo.</li>
+                <li>Registren y contrasten con fuentes escolares.</li>
+              </ul>
+              <h3>Preguntas guía</h3>
+              <ul>
+                <li>¿Cómo justificás el golpe a Yrigoyen?</li>
+                <li>¿Qué significa “orden” en tu proyecto?</li>
+                <li>¿Qué modelo de Estado proponés?</li>
+              </ul>
+              <div class="cuaderno">
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas y contraste.
+              </div>
+            </div>
+          </div>
+          <div class="bar">
+            <button class="btn secondary" onclick="prevSlide()">Volver</button>
+            <button class="btn primary" onclick="nextSlide()">Siguiente presidente</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: PERÓN -->
+        <section id="s7" class="slide">
+          <h2 class="slide-title">Juan D. Perón</h2>
+          <div class="pres-layout">
+            <div>
+              <div class="portrait-lg" style="border-color:#f97316;">
+                <img src="imagenes/peron.jpg" alt="Juan D. Perón" onerror="this.src='https://placehold.co/260x260/F97316/FFFFFF?text=J.P.'">
+              </div>
+            </div>
+            <div class="consignas">
+              <h3>Consigna (en el cuaderno)</h3>
+              <ul>
+                <li>Pregunten por derechos sociales, voto femenino y relación con trabajadores.</li>
+                <li>Registren y contrasten con el libro.</li>
+              </ul>
+              <h3>Preguntas guía</h3>
+              <ul>
+                <li>¿Cómo entendés la justicia social?</li>
+                <li>¿Qué rol tuvo Eva Perón?</li>
+                <li>¿Qué respondés a tus opositores?</li>
+              </ul>
+              <div class="cuaderno">
+                <strong>En el cuaderno:</strong> consignas, preguntas, respuestas y contraste.
+              </div>
+            </div>
+          </div>
+          <div class="bar">
+            <button class="btn secondary" onclick="prevSlide()">Volver</button>
+            <button class="btn primary" onclick="nextSlide()">Ir al cierre</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: CIERRE -->
+        <section id="s8" class="slide">
+          <h2 class="slide-title">Cierre</h2>
+          <div class="consignas">
+            <p><strong>Producto final:</strong> línea de tiempo o infografía comparando respuestas de la IA con el libro.</p>
+            <ul>
+              <li>Coincidencias y diferencias entre IA y texto escolar.</li>
+              <li>Cómo cambia la noción de “pueblo” y “Estado”.</li>
+              <li>Ventajas y riesgos de usar IA en Historia.</li>
+            </ul>
+            <div class="cuaderno">
+              <strong>En el cuaderno:</strong> síntesis del grupo + reflexión personal (3–4 líneas).
+            </div>
+          </div>
+          <div class="bar" style="justify-content:flex-end;">
+            <button class="btn secondary" onclick="goStart()">Volver al inicio</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- PANEL DE CHAT (solo en presidentes) -->
+    <aside id="chat" class="chat-side">
+      <div class="chat-header">
+        <div class="title">Entrevista con <span id="who">el presidente</span></div>
+        <small>El chat se adapta al presidente de la diapositiva.</small>
+      </div>
+      <div style="font-size:12px; margin-top:2px;"><strong>Rol de la IA (prompt)</strong></div>
+      <div id="promptText" onclick="copyPrompt()">Elegí un presidente para ver el rol.</div>
+      <div id="chatBox">
+        <div id="msgs" class="messages"></div>
+        <div class="chat-input">
+          <input id="q" type="text" placeholder="Escribí tu pregunta..." onkeydown="if(event.key==='Enter'){send();}" />
+          <button class="btn primary" style="padding: 8px 14px;" onclick="send()">Enviar</button>
+        </div>
+      </div>
+      <div style="font-size:11px; color:#fbbf24;">
+        <i class="fa-solid fa-circle-exclamation"></i> La IA puede equivocarse: contrasten con el libro.
+      </div>
+      <a href="https://chat.openai.com/" target="_blank" style="font-size:11px; color:#93c5fd; text-decoration:none;">
+        <i class="fa-solid fa-up-right-from-square"></i> Abrir ChatGPT
+      </a>
+    </aside>
+  </div>
+
+  <script>
+    let current = 1;
+    const last = 8;
+    let systemPrompt = "";
+    let persona = "";
+
+    const prompts = {
+      4: {
+        name: "Hipólito Yrigoyen",
+        prompt: "Actuá como Hipólito Yrigoyen (1918). Respondé en primera persona, con tono idealista pero prudente. Explicá el voto secreto, tu mirada sobre la Semana Trágica y las huelgas, y cómo entendés la democracia de tu época."
+      },
+      5: {
+        name: "Marcelo T. de Alvear",
+        prompt: "Actuá como Marcelo T. de Alvear (1925). Respondé en primera persona, con tono diplomático. Describí estabilidad económica, relación con Yrigoyen y tu mirada sobre demandas de cambio social."
+      },
+      6: {
+        name: "José Félix Uriburu",
+        prompt: "Actuá como José Félix Uriburu (1931). Respondé en primera persona, con tono formal-militar. Justificá el golpe de 1930, el orden y el proyecto corporativo que proponés."
+      },
+      7: {
+        name: "Juan D. Perón",
+        prompt: "Actuá como Juan D. Perón (1950). Respondé en primera persona, con tono carismático. Defendé justicia social, voto femenino y relación con los trabajadores; respondé a críticas opositoras."
+      }
+    };
+
+    function show(i) {
+      if (i < 1) i = 1;
+      if (i > last) i = last;
+      document.querySelectorAll(".slide").forEach(s => s.classList.remove("active"));
+      document.getElementById("s" + i).classList.add("active");
+      current = i;
+
+      const layout = document.getElementById("layout");
+      const aside = document.getElementById("chat");
+
+      if ([4, 5, 6, 7].includes(i)) {
+        aside.classList.add("active");
+        layout.classList.add("wide-chat");
+        const info = prompts[i];
+        systemPrompt = info.prompt;
+        persona = info.name;
+        document.getElementById("promptText").textContent = systemPrompt;
+        document.getElementById("who").textContent = persona;
+        const msgs = document.getElementById("msgs");
+        if (msgs) msgs.innerHTML = "";
+        const q = document.getElementById("q");
+        if (q) q.value = "";
+      } else {
+        aside.classList.remove("active");
+        layout.classList.remove("wide-chat");
+        systemPrompt = "";
+        persona = "";
+      }
+
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
+    function nextSlide() { show(current + 1); }
+    function prevSlide() { show(current - 1); }
+    function goPres(idx) { show(idx); }
+    function goStart() { show(1); }
+
+    function copyPrompt() {
+      const el = document.getElementById("promptText");
+      const txt = el.textContent || "";
+      if (!txt.trim()) return;
+      navigator.clipboard.writeText(txt).then(() => {
+        const orig = el.textContent;
+        el.textContent = "¡Prompt copiado! 📋";
+        setTimeout(() => (el.textContent = orig), 1200);
+      });
+    }
+
+    async function send() {
+      const input = document.getElementById("q");
+      const msgs = document.getElementById("msgs");
+      if (!input || !msgs) return;
+      const question = input.value.trim();
+      if (!question) return;
+
+      const me = document.createElement("div");
+      me.className = "m user";
+      me.textContent = "Vos: " + question;
+      msgs.appendChild(me);
+      input.value = "";
+      msgs.scrollTop = msgs.scrollHeight;
+
+      const wait = document.createElement("div");
+      wait.className = "m ai";
+      wait.textContent = (persona || "IA") + " (pensando...)";
+      msgs.appendChild(wait);
+      msgs.scrollTop = msgs.scrollHeight;
+
+      try {
+        const res = await fetch("/.netlify/functions/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemPrompt:
+              systemPrompt ||
+              "Sos un presidente argentino del siglo XX. Respondé breve y claro en español rioplatense.",
+            question
+          })
+        });
+
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (e) {}
+
+        if (!res.ok) {
+          wait.textContent = data && data.error
+            ? "Error: " + data.error
+            : "Error: La API devolvió un problema (" + res.status + ").";
+        } else if (data && data.answer) {
+          wait.textContent = (persona || "Presidente") + ": " + data.answer;
+        } else {
+          wait.textContent = "No pude generar una respuesta.";
+        }
+      } catch (err) {
+        wait.textContent = "Error al contactar con la IA. Probá de nuevo.";
+      }
+
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => show(1));
+  </script>
+</body>
+</html>
